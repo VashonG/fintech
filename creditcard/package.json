@@ -1,7 +1,9 @@
 {
-  "name": "creditcard",
-  "version": "0.1.0",
-  "private": true,
+  "name": "credit-card-program",
+  "version": "1.0.0",
+  "description": "A collection of pre-coded components for creating a credit card program.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -23,6 +25,14 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "keywords": [
+    "credit-card",
+    "react",
+    "components",
+    "typescript"
+  ],
+  "author": "Vashon Gonzales",
+  "license": "Apache-2.0",
   "eslintConfig": {
     "extends": [
       "react-app",
