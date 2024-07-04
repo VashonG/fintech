@@ -1,0 +1,513 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "cp-raml-transactions-fetch-eapi",
+    "description" : "The Transaction API allows users to fetch a list of transaction details using filter conditions.\n\n**Note:** Transaction search results will be displayed in descending order with respect to the transaction time.\n\n### Authentication\n\nThe Transaction API requires a valid, non-expired `IdToken` sent in the authorization header of each request, which can be obtained from the AWS Cognito API. \n\nRefer to the Authentication > Cognito API section for a list of Cognito API requests and additional authentication information. \n\n### Transaction API URLs\n\nThe documentation for each endpoint displays the HTTP method and the end path. Before submitting a request, prepend the base path to obtain the full resource URL. \n\n- Transaction API Production URL: <br />**[https://cp-transaction-eapi.api.fleetcor.com/api](https://cp-transaction-eapi.api.fleetcor.com/api)**<br /><br />\n\n- Transaction API Beta URL: <br />**[https://cp-payments-eapi-qa.us-ea1-01.api.fleetcor.com/api](https://cp-payments-eapi-qa.us-ea1-01.api.fleetcor.com/api)**",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/69fcd0c0-e390-49c7-b991-2211db09f586/transactions-fetch-eapi/1.0.0/m/api/transactions"
+  } ],
+  "paths" : {
+    "/api/transactions" : {
+      "get" : {
+        "tags" : [ "default" ],
+        "summary" : "List Transactions",
+        "description" : "This endpoint retrieves a list of transaction details using filter conditions. The transactions in the response will display in descending order according to `transactionTime`. \n\n**Note:** A maximum of 1,000 transactions can display. You can search for transactions up to 30 days in the past.\n\n#### Query Parameters\n| **Field** | **Description** |\n|---|---|\n| customerId | **String (required)** <br />The Corpay-assigned customer ID. Max 5 characters. |\n| transactionType | **String (required)** <br />The transaction type: <ul><li>`PRE_AUTHORIZATION`</li><li>`AUTHORIZATION`</li><li>`DECLINE`</li><li>`CREDIT`</li><li>`FORCE POST`</li><li>`POST`</li><li>`REVERSAL`</li><li>`EXPIRE`</li></ul> |\n| cardToken | **String (required)** <br />The card token, which can be obtained from the card-status-events webhook or the Ghost & Physical Card > Fetch Card Status endpoint. |\n| startDate | **String** <br />The start date and time of the transactions in format YYYY-MM-DDTHH:MM:SS. Error will be thrown for any other format. |\n| endDate | **String** <br />The end date and time of the transactions in format YYYY-MM-DDTHH:MM:SS. Error will be thrown for any other format. |\n\n#### Response Body\n| **Field** | **Description** |\n|---|---|\n| expirationDate | The card expiration date in format MMYY. |\n| postedAmount | The posted amount of the transaction. |\n| preauthAmount | The preauthorization amount of the transaction. |\n| transactionTime | The transaction time. |\n| type | The transaction type: <ul><li>`PRE_AUTHORIZATION`</li><li>`AUTHORIZATION`</li><li>`DECLINE`</li><li>`CREDIT`</li><li>`POST`</li><li>`REVERSAL`</li><li>`EXPIRE`</li></ul>|\n| acquirerID | The unique identifier for the acquirer. |\n| approvalCode | The transaction approval code. |\n| customer | The customer object. |\n| customer.accountName | The account name. |\n| customer.accountNumber | The customer's Corpay account number. |\n| customer.name | The name of the customer. |\n| customer.id | The Corpay-assigned customer ID. |\n| card | The card object. |\n| card.customer | The card customer object. |\n| card.customer.accountName | The account name on the card. |\n| card.customer.accountNumber | The Corpay-assigned account number. |\n| card.customer.name | The customer's name. |\n| card.customer.id | The Corpay customer ID. |\n| token | The card token. This value can be used in subsequent API requests. |\n| cardLastFour | The last four digits of the card number. |\n| bin | The first six digits of the credit card number that identifies the bank, private label company, or financial institution that issued the card. |\n| status | The card status, where <ul><li>`A` = Active</li><li>`B` = Block </li><li>`C` = Created</li><li>`D` = Deleted</li><li>`E` = Expired</li><li>`F` = Fraud (Blocked)</li><li>`G` = Partial Block</li><li>`K` = Card Chargeback</li><li>`L` = Lost Card</li><li>`M` = Move<br /> Card moved to a different customer ID.</li><li>`S` = Stolen (Blocked)</li><li>`T` = Card Transfer</li><li>`V` = VRU Pin Block</li><li>`X` = Permanent Security Block</li> |\n| cardBlockReasonCode | The numerical code used to identify a blocked card. | |\n| cardBlockReason | A description of the card block reason code used to block a card. |\n| expirationDate | The card expiration date in format MMYY. |\n| employeeId | The cardholder's employee ID. |\n| cardHolderFirstName | The first name of the cardholder. |\n| cardHolderLastName | The last name of the cardholder. |\n| creationDate | Card creation date. |\n| misc1 | Additional miscellaneous data about the transaction. |\n| misc2 | Additional miscellaneous data about the transaction. |\n| cardLimits | The card limits object. |\n| cardLimits.dailyAmountLimit | The daily amount limit for the card. |\n| cardLimits.dailyAmountLimitUsed | The amount used of the daily limit. |\n| cardLimits.dailyAmountLimitHold | The daily amount on hold against transaction limits based on pre-authorizations. |\n| cardLimits.dailyAmountLimitAvailable | The amount available for the day. |\n| cardLimits.dailyTransactionLimit | The daily transaction limit. |\n| cardLimits.dailyTransactionLimitUsed | The number of daily transactions used. |\n| cardLimits.dailyTransactionLimitHold | The number of daily transactions on hold against transaction limits based on pre-authorizations. |\n| cardLimits.dailyTransactionLimitAvailable | The number of available transactions for the current day. |\n| cardLimits.cycleAmountLimit | The limit amount for the card cycle. |\n| cardLimits.cycleAmountLimitUsed | The monthly or weekly cycle amount used. |\n| cardLimits.cycleAmountLimitHold | The monthly or weekly cycle amount on hold against transaction limits based on pre-authorizations. |\n| cardLimits.cycleAmountLimitAvailable | The available amount in the monthly or weekly card cycle. |\n| cardLimits.cycleTransactionLimit | The transaction limit for the card cycle. |\n| cardLimits.cycleTransactionLimitUsed | The number of monthly or weekly card cycle transactions used.|\n| cardLimits.cycleTransactionLimitHold | The cycle transaction limits on hold based on pre-authorizations. | \n| cardLimits.cycleTransactionLimitAvailable | The number of available transactions in the cycle. |\n| cardContact | The card contact object. |\n| cardContact.company | The company name for the card contact. |\n| cardcontact.attention | The intended recipient at the card contact's address. |\n| cardContact.addressLine1 | Line one of the card contact's mailing address. |\n| cardContact.addressLine2 | Line two of the card contact's mailing address. |\n| cardContact.city | The card contact's city. |\n| cardContact.state | The card contact's state. |\n| cardContact.country | The card contact's country. |\n| cardContact.zip | The card contact's zip code. |\n| cardProfile | The card profile object. |\n| cardProfile.companyStandardId | Three-digit number that relates to the card profile. |\n| cardProfile.companyStandardDescription | The description of the company standard Id. |\n| modificationTime | The date and time of the last card modification. |\n| merchant | The merchant object. |\n| merchant.name | The merchant name. |\n| merchant.mcc | The Merchant Category Code (MCC) object. |\n| merchant.mcc.name | The Merchant Category Code name. |\n| merchant.mcc.group | The MCC group. |\n| merchant.mcc.description | The MCC description. |\n| merchant.address | The merchant address object. |\n| merchant.address.company | The merchant's company name. |\n| merchant.address.attention | The intended recipient at the merchant's mailing address. |\n| merchant.address.addressLine1 | Line one of the merchant's mailing address. |\n| merchant.address.addressLine2 | Line two of the merchant's mailing address. |\n| merchant.address.city | The city for the merchant's mailing address. |\n| merchant.address.state | The state for the merchant's mailing address. |\n| merchant.address.country | The merchant's country. |\n| merchant.address.zip | The zip code for the merchant's mailing address. |\n| pos | The Point of Sale (POS) object. |\n| pos.entryType | The point of sale entry type. |\n| pos.entryTypeDescription | A description of the POS entry type. |\n| pos.acceptorID | A unique identifier for the point of sale. |\n| pos.promptID | The prompt identifier. |\n| pos.acceptLocation | The location of the point of sale|\n| idMatchNumber | The transaction ID match to cross reference authorization and posted data. |\n| reversalFlag | Indicates if the transaction was a reversal. <ul><li>No - No reversal</li><li>Y - Full reversal of authorized transaction</li><li>C - Credit for all or a portion of the posted amount</li><li>P - Partial reversal (adjustment of authorized transaction)</li><li>R - Reversal for all of a portion of a posted amount</li><li>X - Authorization expired</li></ul>. |\n| declineCode | The code for a declined transaction. |\n| declineMessage | A description of the decline code, if applicable. |\n| correctiveAction | A message describing the suggested action in response to the decline code. |",
+        "parameters" : [ {
+          "name" : "Accept",
+          "in" : "header",
+          "required" : false,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "application/json"
+        }, {
+          "name" : "customerId",
+          "in" : "query",
+          "description" : "**String (required)** \nThe customer ID. Max 5 characters.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "customerId"
+        }, {
+          "name" : "transactionType",
+          "in" : "query",
+          "description" : "**String (required)**\nThe transaction type (required). <ul><li>`PRE_AUTHORIZATION`</li><li>`AUTHORIZATION`</li><li>`DECLINE`</li><li>`CREDIT`</li><li>`FORCE POST`</li><li>`POST`</li><li>`REVERSAL`</li><li>`EXPIRE`</li></ul>",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "transactionType"
+        }, {
+          "name" : "cardToken",
+          "in" : "query",
+          "description" : "**String (required)**\nThe card token.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "cardToken"
+        }, {
+          "name" : "startDate",
+          "in" : "query",
+          "description" : "**String**\nThe start date and time of transactions in format YYYY-MM-DDTHH:MM:SS. Error will be thrown for other formats. ",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "startDate"
+        }, {
+          "name" : "endDate",
+          "in" : "query",
+          "description" : "**String**\nThe end date and time of transactions  in format YYYY-MM-DDTHH:MM:SS. Error will be thrown for other formats.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "endDate"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : [ {
+                  "expirationDate" : "0223",
+                  "postedAmount" : 155.01,
+                  "preAuthAmount" : 25.5,
+                  "transactionTime" : "2023-01-08T00:23:00",
+                  "type" : "REVERSAL",
+                  "acquirerID" : "ABC12345",
+                  "approvalCode" : 22408037,
+                  "customer" : {
+                    "accountName" : "Sample Account Name",
+                    "accountNumber" : "123BC",
+                    "name" : "Anna Garcia",
+                    "id" : "FT567"
+                  },
+                  "card" : {
+                    "customer" : {
+                      "accountName" : "Sample Account Name",
+                      "accountNumber" : "JK789",
+                      "name" : "Walter Rex",
+                      "id" : "QE123"
+                    },
+                    "token" : "223T39P4X9",
+                    "cardLastFour" : "",
+                    "bin" : "",
+                    "status" : "S",
+                    "cardBlockReasonCode" : "4",
+                    "cardBlockReason" : "ACCOUNT INFORMATION INVALID",
+                    "expirationDate" : "0423",
+                    "employeeId" : "CD345",
+                    "cardHolderFirstName" : "Devon",
+                    "cardHolderLastName" : "Smith",
+                    "creationDate" : "2023-06-05 06:54:15.885580",
+                    "misc1" : "Sample miscellaneous data",
+                    "misc2" : "Sample miscellaneous data",
+                    "cardLimits" : {
+                      "dailyAmountLimit" : 200.01,
+                      "dailyAmountLimitUsed" : 100.2,
+                      "dailyAmountLimitHold" : 25.01,
+                      "dailyAmountLimitAvailable" : 135.01,
+                      "dailyTransactionLimit" : 4,
+                      "dailyTransactionLimitUsed" : 1,
+                      "dailyTransactionLimitHold" : 1,
+                      "dailyTransactionLimitAvailable" : 3,
+                      "cycleAmountLimit" : 5000.01,
+                      "cycleAmountLimitUsed" : 25.01,
+                      "cycleAmountLimitHold" : 45.01,
+                      "cycleAmountLimitAvailable" : 3867.25,
+                      "cycleTransactionLimit" : 35,
+                      "cycleTransactionLimitUsed" : 10,
+                      "cycleTransactionLimitHold" : 2,
+                      "cycleTransactionLimitAvailable" : 23
+                    },
+                    "cardContact" : {
+                      "company" : "Sample Company",
+                      "attention" : "Accounts Receivable",
+                      "addressLine1" : "PO Box 1213",
+                      "addressLine2" : "456 Main Blvd",
+                      "city" : "Portland",
+                      "state" : "OR",
+                      "country" : "US",
+                      "zip" : "97333"
+                    },
+                    "cardProfile" : {
+                      "companyStandardId" : "123",
+                      "companyStandardDescription" : "Sample Company Standard Description"
+                    },
+                    "modificationTime" : "2023-02-02 06:54:15.885580"
+                  },
+                  "merchant" : {
+                    "name" : "Sample Service Station",
+                    "mcc" : {
+                      "name" : "MCC Group Name",
+                      "group" : "FUEL GROUP",
+                      "description" : "GAS / SERVICE STATION"
+                    },
+                    "address" : {
+                      "company" : "Merchant Company Name",
+                      "attention" : "Jane Doe",
+                      "addressLine1" : "PO Box 111",
+                      "addressLine2" : "123 Main St",
+                      "city" : "Atlanta",
+                      "state" : "GA",
+                      "country" : "US",
+                      "zip" : "97333"
+                    }
+                  },
+                  "pos" : {
+                    "entryType" : 50,
+                    "entryDescription" : "SWIPED TRX. VIA CHIP",
+                    "acceptorID" : "001234567",
+                    "promptID" : "54321",
+                    "acceptLocation" : "ABC RETAIL BRENTWOOD TN"
+                  },
+                  "idMatchNumber" : "1234",
+                  "reversalFlag" : "N",
+                  "declineCode" : 3,
+                  "declineMessage" : "UNKNOWN",
+                  "correctiveAction" : "NONE"
+                }, {
+                  "expirationDate" : "0624",
+                  "postedAmount" : 450.01,
+                  "preAuthAmount" : 250.01,
+                  "transactionTime" : "2023-03-08T00:23:00",
+                  "type" : "AUTHORIZATION",
+                  "acquirerID" : "ABC1234",
+                  "approvalCode" : 12345,
+                  "customer" : {
+                    "accountName" : "Sample Account Name",
+                    "accountNumber" : "YT123",
+                    "name" : "Jane Smith",
+                    "id" : "GT123"
+                  },
+                  "card" : {
+                    "customer" : {
+                      "accountName" : "Sample Account Name",
+                      "accountNumber" : "AB123",
+                      "name" : "Walter Rex",
+                      "id" : "CD456"
+                    },
+                    "token" : "223T39P4X9",
+                    "cardLastFour" : "",
+                    "bin" : "",
+                    "status" : "C",
+                    "cardBlockReasonCode" : "7",
+                    "cardBlockReason" : "UNKNOWN",
+                    "expirationDate" : "0623",
+                    "employeeId" : "1234",
+                    "cardHolderFirstName" : "Emily",
+                    "cardHolderLastName" : "Williams",
+                    "creationDate" : "2023-06-05 06:54:15.885580",
+                    "misc1" : "Sample miscellaneous data",
+                    "misc2" : "Sample miscellaneous data",
+                    "cardLimits" : {
+                      "dailyAmountLimit" : 150.01,
+                      "dailyAmountLimitUsed" : 25.55,
+                      "dailyAmountLimitHold" : 15.01,
+                      "dailyAmountLimitAvailable" : 75.01,
+                      "dailyTransactionLimit" : 25,
+                      "dailyTransactionLimitUsed" : 2,
+                      "dailyTransactionLimitHold" : 3,
+                      "dailyTransactionLimitAvailable" : 20,
+                      "cycleAmountLimit" : 1500.01,
+                      "cycleAmountLimitUsed" : 150.01,
+                      "cycleAmountLimitHold" : 50,
+                      "cycleAmountLimitAvailable" : 1000,
+                      "cycleTransactionLimit" : 300,
+                      "cycleTransactionLimitUsed" : 150,
+                      "cycleTransactionLimitHold" : 25,
+                      "cycleTransactionLimitAvailable" : 125
+                    },
+                    "cardContact" : {
+                      "company" : "Sample Company",
+                      "attention" : "Accounts Payable",
+                      "addressLine1" : "PO Box 321",
+                      "addressLine2" : "456 Main St",
+                      "city" : "Portland",
+                      "state" : "OR",
+                      "country" : "US",
+                      "zip" : "97333"
+                    },
+                    "cardProfile" : {
+                      "companyStandardId" : "123",
+                      "companyStandardDescription" : "Sample Company Standard Description"
+                    },
+                    "modificationTime" : "2023-06-05 06:54:15.885580"
+                  },
+                  "merchant" : {
+                    "name" : "Sample Merchant Name",
+                    "mcc" : {
+                      "name" : "MCC Group Name",
+                      "group" : "FUEL GROUP",
+                      "description" : "GAS / SERVICE STATION"
+                    },
+                    "address" : {
+                      "company" : "Sample Merchant Name",
+                      "attention" : "John Doe",
+                      "addressLine1" : "PO Box 111",
+                      "addressLine2" : "123 Main Blvd",
+                      "city" : "Portland",
+                      "state" : "OR",
+                      "country" : "US",
+                      "zip" : "97333"
+                    }
+                  },
+                  "pos" : {
+                    "entryType" : 51180202,
+                    "entryDescription" : "UNKNOWN",
+                    "acceptorID" : "AB123",
+                    "promptID" : "1234",
+                    "acceptLocation" : "GAS STATION PORTLAND OR"
+                  },
+                  "idMatchNumber" : "1234",
+                  "reversalFlag" : "P",
+                  "declineCode" : 75796957,
+                  "declineMessage" : "UNKNOWN",
+                  "correctiveAction" : "NONE"
+                } ]
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad Request",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "error" : {
+                    "message" : "The request body is wrong",
+                    "code" : "PARAMETER_WRONG",
+                    "type" : "Bad Request",
+                    "details" : "Input errors exist"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "error" : {
+                    "message" : "Authentication failed",
+                    "code" : "Authentication",
+                    "type" : "UNAUTHORIZED",
+                    "details" : "UNAUTHORIZED"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Forbidden",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "error" : {
+                    "message" : "Check the url and the command by reviewing the Corpay API documentation",
+                    "code" : "FRAMEWORK_EXCEPTION",
+                    "type" : "Method Not Allowed",
+                    "details" : "Request method POST not supported"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Not Found",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "error" : {
+                    "message" : "Could not find transactions",
+                    "code" : "Not found",
+                    "type" : "Not found",
+                    "details" : "Not found"
+                  }
+                }
+              }
+            }
+          },
+          "415" : {
+            "description" : "Unsupported Media Type",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "error" : {
+                    "message" : "Error trying to find response with media types",
+                    "code" : "INVALID_RESPONSE_ACCEPT_HEADER",
+                    "type" : "UNSUPPORTED MEDIA TYPE",
+                    "details" : "Error trying to find response with media types"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Internal Server Error",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "error" : {
+                    "message" : "The request is not processed",
+                    "code" : "Internal Server Error",
+                    "type" : "Internal Server Error",
+                    "details" : "Internal server error; could not complete the request"
+                  }
+                }
+              }
+            }
+          },
+          "502" : {
+            "description" : "Bad Gateway",
+            "headers" : {
+              "Content-Type" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "application/json"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object"
+                },
+                "example" : {
+                  "error" : {
+                    "message" : "Bad gateway",
+                    "code" : "Bad gateway",
+                    "type" : "Bad gateway",
+                    "details" : "Bad gateway"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerAuth" : [ ]
+        } ]
+      }
+    }
+  },
+  "components" : {
+    "schemas" : { },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer"
+      }
+    }
+  }
+}
